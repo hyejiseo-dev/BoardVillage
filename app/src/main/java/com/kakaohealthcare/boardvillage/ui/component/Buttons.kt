@@ -12,29 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.user.UserApiClient
 import com.kakaohealthcare.boardvillage.navigation.Screen
-
-//@Composable
-//fun LoginBtn(navController: NavHostController, screen: Screen, modifier: Modifier) {
-//    Button(
-//        onClick = { navController.navigate(screen.route) },
-//        modifier = modifier,
-//        colors = ButtonDefaults.buttonColors(Color.Transparent),
-//    ) {
-//        Image(
-//            painter = painterResource(id = R.drawable.kakao_login),
-//            contentDescription = "",
-//            modifier = Modifier
-//                .width(220.dp)
-//                .height(190.dp)
-//                .padding(10.dp)
-//        )
-//    }
-//}
 
 
 @Composable

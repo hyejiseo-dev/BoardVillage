@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.airbnb.lottie.compose.LottieAnimation
@@ -23,11 +25,29 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.kakaohealthcare.boardvillage.R
+import com.kakaohealthcare.boardvillage.base.BaseApplication
+import com.kakaohealthcare.boardvillage.domain.usecase.GetUserInfoUseCase
 import com.kakaohealthcare.boardvillage.navigation.Screen
+import com.kakaohealthcare.boardvillage.ui.viewmodel.LoginViewModel
 
 
 @Composable
-fun SplashScreen(navController: NavHostController) {
+fun SplashScreen(navController: NavHostController, viewModel: LoginViewModel) {
+
+    var savedId = BaseApplication.prefs.getString("ldap_Id","annie_ble")
+
+    LaunchedEffect(Unit) {
+        viewModel.getLoginUser(savedId)
+
+        if(viewModel.getLoginUser(savedId) != null){
+            viewModel.getUserInfo(savedId)
+            if(viewModel.viewState.value.loginSuccess){
+                navController.navigate(Screen.BoardMain.route)
+            } else {
+                navController.navigate(Screen.Profile.route)
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -59,7 +79,6 @@ fun SplashScreen(navController: NavHostController) {
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
             )
-
         }
 
         LottieAnimation(
@@ -72,7 +91,11 @@ fun SplashScreen(navController: NavHostController) {
         )
 
         if (chickAnimationState.isAtEnd && chickAnimationState.isPlaying || progressAnimationState.isAtEnd && progressAnimationState.isPlaying) {
-            navController.navigate(Screen.Home.route)
+            if(viewModel.viewState.value.loginSuccess){
+                navController.navigate(Screen.BoardMain.route)
+            } else {
+                navController.navigate(Screen.Profile.route)
+            }
         }
     }
 }
@@ -81,5 +104,6 @@ fun SplashScreen(navController: NavHostController) {
 @Composable
 fun SplashPreviews() {
     val navController = rememberNavController()
-    SplashScreen(navController = navController)
+    val viewModel = hiltViewModel<LoginViewModel>()
+    SplashScreen(navController = navController, viewModel = viewModel)
 }

@@ -7,34 +7,26 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.kakaohealthcare.boardvillage.ui.screens.BoardMainScreen
 import com.kakaohealthcare.boardvillage.ui.screens.SplashScreen
-import com.kakaohealthcare.boardvillage.ui.screens.HomeScreen
 import com.kakaohealthcare.boardvillage.ui.screens.ProfileScreen
 import com.kakaohealthcare.boardvillage.ui.viewmodel.ProfileViewModel
 import com.kakaohealthcare.boardvillage.ui.screens.UserScreen
-import com.kakaohealthcare.boardvillage.ui.viewmodel.HomeViewModel
+import com.kakaohealthcare.boardvillage.ui.viewmodel.LoginViewModel
 
 @Composable
 fun SetupNavGraph(navController: NavHostController) {
-    val profileViewModel = hiltViewModel<ProfileViewModel>()
+
     NavHost(
         navController = navController,
         startDestination = Screen.Splash.route
     ) {
         composable(route = Screen.Splash.route) {
-            SplashScreen(navController = navController)
+            val viewModel = hiltViewModel<LoginViewModel>()
+            SplashScreen(navController = navController, viewModel = viewModel)
         }
 
-        composable(route = Screen.Home.route) {
-            val viewModel = hiltViewModel<HomeViewModel>()
-            HomeScreen(navController, viewModel)
-        }
-
-        composable(route = "${Screen.Profile.route}/{token}") {
+        composable(route = Screen.Profile.route) {
             val viewModel = hiltViewModel<ProfileViewModel>()
-            val token = it.arguments?.getString("token")
-            if (token != null) { // 26983823
-                ProfileScreen(navController = navController, viewModel = viewModel, token = token)
-            }
+            ProfileScreen(navController, viewModel = viewModel)
         }
 
         composable(route = Screen.User.route) {

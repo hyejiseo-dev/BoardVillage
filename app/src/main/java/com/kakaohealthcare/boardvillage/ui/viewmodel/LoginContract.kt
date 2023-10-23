@@ -5,21 +5,19 @@ import com.kakaohealthcare.boardvillage.base.ViewEffect
 import com.kakaohealthcare.boardvillage.base.ViewEvent
 import com.kakaohealthcare.boardvillage.base.ViewState
 
-class HomeContract {
+class LoginContract {
 
     sealed class Event : ViewEvent {
-        data class getLoginToken(val loginToken: String) : Event()
-        data class kakaoLoginSuccess(val loginSuccess: Boolean) : Event()
+        data class getLdapId(val ldapId : String) : Event()
+        data class loginSuccess(val loginSuccess: Boolean) : Event()
     }
 
     @Immutable
     data class State(
-        var loginToken: String,
+        var ldapId: String,
         var loginSuccess: Boolean
-    ) : ViewState{
-    }
+    ) : ViewState
 
     sealed class Effect : ViewEffect {
-        object ShowSnackBar : Effect()
     }
 }

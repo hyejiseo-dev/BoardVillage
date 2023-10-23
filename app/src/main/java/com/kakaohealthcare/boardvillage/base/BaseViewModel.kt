@@ -3,7 +3,6 @@ package com.kakaohealthcare.boardvillage.base
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import com.kakaohealthcare.boardvillage.base.ViewState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
@@ -17,7 +16,6 @@ interface ViewState
 interface ViewEffect
 
 abstract class BaseViewModel<Event: ViewEvent, UiState: ViewState, Effect: ViewEffect> : ViewModel() {
-
     abstract fun setInitialState(): UiState
     abstract fun handleEvents(event: Event)
 
@@ -56,5 +54,6 @@ abstract class BaseViewModel<Event: ViewEvent, UiState: ViewState, Effect: ViewE
         val effectValue = builder()
         viewModelScope.launch { _effect.send(effectValue) }
     }
+
 
 }

@@ -34,7 +34,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.kakaohealthcare.boardvillage.R
 import com.kakaohealthcare.boardvillage.domain.model.Board
-import com.kakaohealthcare.boardvillage.domain.model.DataProvider
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -76,16 +75,16 @@ fun EmptyContent(){
 
 }
 
-@Composable
-fun RecyclerViewContent() {
-    val boards = remember { DataProvider.boardList }
-    LazyColumn(contentPadding = PaddingValues(16.dp, 8.dp), modifier = Modifier.fillMaxSize()) {
-        items(
-            items = boards,
-            itemContent = { BoardListItem(it) }
-        )
-    }
-}
+//@Composable
+//fun RecyclerViewContent() {
+//    val boards = remember { DataProvider.boardList }
+//    LazyColumn(contentPadding = PaddingValues(16.dp, 8.dp), modifier = Modifier.fillMaxSize()) {
+//        items(
+//            items = boards,
+//            itemContent = { BoardListItem(it) }
+//        )
+//    }
+//}
 
 @Composable
 fun BoardListItem(board: Board) {

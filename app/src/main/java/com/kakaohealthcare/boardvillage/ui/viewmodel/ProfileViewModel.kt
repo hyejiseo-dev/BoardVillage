@@ -1,30 +1,31 @@
 package com.kakaohealthcare.boardvillage.ui.viewmodel
 
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewModelScope
 import com.kakaohealthcare.boardvillage.base.BaseViewModel
+import com.kakaohealthcare.boardvillage.domain.model.User
+import com.kakaohealthcare.boardvillage.domain.usecase.GetUserInfoUseCase
+import com.kakaohealthcare.boardvillage.util.getCurrentTime
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ProfileViewModel() :
-    BaseViewModel<ProfileContract.Event, ProfileContract.State, ProfileContract.Effect>() {
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
+    private val getUserInfoUseCase: GetUserInfoUseCase
+) : BaseViewModel<ProfileContract.Event, ProfileContract.State, ProfileContract.Effect>() {
 
-//    private val _state = MutableStateFlow(ProfileContract.State("","", false))
-//    val state: StateFlow<ProfileContract.State> = _state
-
-
-    fun setLdapID(ldapId: String) {
-        if (ldapId != "") {
-            setEvent(ProfileContract.Event.InputLdapId(ldapId = ldapId))
-        }
+    fun inputLdapId(ldapID: String) {
+        setEvent(ProfileContract.Event.InputLdapId(ldapId = ldapID))
     }
 
-    fun setPhoneNumber(phoneNumber: String){
-        if(phoneNumber != ""){
-            setEvent(ProfileContract.Event.InputPhoneNumber(phoneNumber = phoneNumber))
-        }
+    fun inputPhoneNumber(phoneNumber: String) {
+        setEvent(ProfileContract.Event.InputPhoneNumber(phoneNumber = phoneNumber))
     }
 
-    fun saveProfile(){
-        if(!viewState.value.ldapId.equals("") || !viewState.value.phoneNumber.equals("")){
+    fun saveProfile() {
+        if (viewState.value.ldapId != "" && viewState.value.phoneNumber != "") {
             setEvent(ProfileContract.Event.OnSaveProfile(saveProfile = true))
+            setProfile()
         } else {
             setEvent(ProfileContract.Event.OnSaveProfile(saveProfile = false))
         }
@@ -33,7 +34,8 @@ class ProfileViewModel() :
     override fun setInitialState() = ProfileContract.State(
         ldapId = "",
         phoneNumber = "",
-        saveProfile = false,
+        profileImg = "",
+        saveProfile = false
     )
 
     override fun handleEvents(event: ProfileContract.Event) {
@@ -50,12 +52,41 @@ class ProfileViewModel() :
                 }
             }
 
-            is ProfileContract.Event.OnSaveProfile ->{
+            is ProfileContract.Event.InputProfileImage -> {
+                setState {
+                    copy(profileImg = event.profileImg)
+                }
+            }
+
+            is ProfileContract.Event.OnSaveProfile -> {
                 setState {
                     copy(saveProfile = event.saveProfile)
                 }
+                if (!event.saveProfile) {
+                    setEffect { ProfileContract.Effect.ShowSnackBar }
+                }
             }
+
+        }
+    }
+
+    private fun setProfile() {
+        viewModelScope.launch {
+            getUserInfoUseCase.invoke(
+                user = User(
+                    chatterbox = false,
+                    coffee_maker = false,
+                    fcm_token = "",
+                    ldap_id = viewState.value.ldapId,
+                    phone_number = viewState.value.phoneNumber,
+                    profile_img = viewState.value.profileImg,
+                    reg_dt = getCurrentTime(),
+                    update_dt = getCurrentTime()
+                )
+            )
         }
     }
 
 }
+
+

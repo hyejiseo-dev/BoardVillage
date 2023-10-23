@@ -10,23 +10,18 @@ class ProfileContract {
     sealed class Event : ViewEvent {
         data class InputLdapId(val ldapId: String) : Event()
         data class InputPhoneNumber(val phoneNumber: String) : Event()
+        data class InputProfileImage(val profileImg: String) : Event()
         data class OnSaveProfile(val saveProfile: Boolean) : Event()
+
     }
 
     @Immutable
     data class State(
-        val ldapId: String?,
-        val phoneNumber: String?,
-        var saveProfile: Boolean
-    ) : ViewState{
-        companion object {
-            fun initial() = State(
-                ldapId = "",
-                phoneNumber = "",
-                saveProfile = false,
-            )
-        }
-    }
+        var ldapId: String = "",
+        var phoneNumber: String = "",
+        var profileImg : String = "",
+        var saveProfile: Boolean = false
+    ) : ViewState
 
     sealed class Effect : ViewEffect {
 
