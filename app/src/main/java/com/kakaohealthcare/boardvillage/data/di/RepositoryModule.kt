@@ -18,8 +18,9 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun providesUserInfoRepository(database: FirebaseDatabase): UserInfoRepository {
-        return UserInfoRepositoryImpl(database)
+    fun providesUserInfoRepository(database: FirebaseDatabase,
+                                   @IoDispatcher ioDispatcher: CoroutineDispatcher): UserInfoRepository {
+        return UserInfoRepositoryImpl(database, ioDispatcher)
     }
 
     @Provides

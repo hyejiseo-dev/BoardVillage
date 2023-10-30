@@ -37,16 +37,16 @@ fun SplashScreen(navController: NavHostController, viewModel: LoginViewModel) {
     var savedId = BaseApplication.prefs.getString("ldap_Id","annie_ble")
 
     LaunchedEffect(Unit) {
-        viewModel.getLoginUser(savedId)
+//        viewModel.getLoginUser(savedId)
 
-        if(viewModel.getLoginUser(savedId) != null){
-            viewModel.getUserInfo(savedId)
-            if(viewModel.viewState.value.loginSuccess){
-                navController.navigate(Screen.BoardMain.route)
-            } else {
-                navController.navigate(Screen.Profile.route)
-            }
-        }
+//        if(viewModel.getLoginUser(savedId) != null){
+//            viewModel.getUserInfo(savedId)
+//            if(viewModel.viewState.value.loginSuccess){
+//                navController.navigate(Screen.BoardMain.route)
+//            } else {
+//                navController.navigate(Screen.Profile.route)
+//            }
+//        }
     }
 
     Box(

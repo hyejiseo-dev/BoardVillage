@@ -21,25 +21,8 @@ class UserInfoRepositoryImpl @Inject constructor(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : UserInfoRepository {
 
-    override suspend fun getUserInfo(userId: String) : User? {
-        val reference = database.getReference("user_info")
-        var userInfo : User? = null
-
-        reference.child(userId).addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val user: User? = dataSnapshot.getValue(User::class.java)
-                if (user != null) {
-                    userInfo = user
-                    Log.i("tag","The read profile: " + user.ldap_id);
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.i("tag","The read failed: " + databaseError.code);
-            }
-        })
-
-        return userInfo
+    override suspend fun getUserInfo(userId: String) : Result<User> = makeApiCall(dispatcher){
+       getUserLogin(userId = userId)!!
     }
 
     override suspend fun setUserInfo(user: User) {
@@ -52,7 +35,36 @@ class UserInfoRepositoryImpl @Inject constructor(
             }
         }
     }
+
+     private fun getUserLogin(userId: String): User? {
+        val reference = database.getReference("user_info")
+        var userInfo : User? = null
+
+        reference.child(userId).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    userInfo = dataSnapshot.getValue(User::class.java)
+                    Log.i("tag","Read profile: " + userInfo!!.ldap_id);
+                    Log.i("tag","Read profile: " + userInfo!!.phone_number);
+                    Log.i("tag","Read profile: " + userInfo!!.reg_dt);
+                    //here means the value exist
+                    //do whatever you want to do
+                } else {
+                    Log.i("tag","No data ");
+                    //here means the value not exist
+                    //do whatever you want to do
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.i("tag","Read failed: " + databaseError.code);
+            }
+        })
+
+        return userInfo
+    }
 }
+
 
 suspend fun <T> makeApiCall(
     dispatcher: CoroutineDispatcher,

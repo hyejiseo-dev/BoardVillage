@@ -5,7 +5,7 @@ import java.sql.Date
 
 interface UserInfoRepository {
 
-    suspend fun getUserInfo(userId: String): User?
+    suspend fun getUserInfo(userId: String): Result<User>
 
     suspend fun setUserInfo(user: User)
 }

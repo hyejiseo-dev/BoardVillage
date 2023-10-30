@@ -1,12 +1,13 @@
 package com.kakaohealthcare.boardvillage.domain.usecase
 
+import com.kakaohealthcare.boardvillage.data.repository.UserInfoRepositoryImpl
 import com.kakaohealthcare.boardvillage.domain.model.InvalidUserException
 import com.kakaohealthcare.boardvillage.domain.model.User
 import com.kakaohealthcare.boardvillage.domain.repository.UserInfoRepository
 import javax.inject.Inject
 
 class GetUserInfoUseCase @Inject constructor(val repo: UserInfoRepository) {
-    suspend fun execute(userId : String): User? {
+    suspend fun execute(userId : String): Result<User> {
         return repo.getUserInfo(userId)
     }
 
